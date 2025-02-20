@@ -1,0 +1,8 @@
+C:/Users/mile3677/Documents/GitHub/Vetrinary_AR/IM_Vet_G11/.utmp/RelWithDebInfo/3sz1p201/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/mile3677/Documents/GitHub/Vetrinary_AR/IM_Vet_G11/.utmp/RelWithDebInfo/3sz1p201/arm64-v8a/CMakeFiles/rebuild_cache.dir
+C:/Users/mile3677/Documents/GitHub/Vetrinary_AR/IM_Vet_G11/.utmp/RelWithDebInfo/3sz1p201/arm64-v8a/GameActivity/CMakeFiles/game.dir
+C:/Users/mile3677/Documents/GitHub/Vetrinary_AR/IM_Vet_G11/.utmp/RelWithDebInfo/3sz1p201/arm64-v8a/GameActivity/CMakeFiles/edit_cache.dir
+C:/Users/mile3677/Documents/GitHub/Vetrinary_AR/IM_Vet_G11/.utmp/RelWithDebInfo/3sz1p201/arm64-v8a/GameActivity/CMakeFiles/rebuild_cache.dir
+C:/Users/mile3677/Documents/GitHub/Vetrinary_AR/IM_Vet_G11/.utmp/RelWithDebInfo/3sz1p201/arm64-v8a/FramePacing/CMakeFiles/swappywrapper.dir
+C:/Users/mile3677/Documents/GitHub/Vetrinary_AR/IM_Vet_G11/.utmp/RelWithDebInfo/3sz1p201/arm64-v8a/FramePacing/CMakeFiles/edit_cache.dir
+C:/Users/mile3677/Documents/GitHub/Vetrinary_AR/IM_Vet_G11/.utmp/RelWithDebInfo/3sz1p201/arm64-v8a/FramePacing/CMakeFiles/rebuild_cache.dir
