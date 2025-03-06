@@ -1,8 +1,11 @@
 using UnityEngine;
+using UnityEngine.Android;
 
 public class ScaleFromMicrophone : MonoBehaviour
 {
+    public PlacementIndicator placementIndicatorScript;
     public AudioSource source;
+    private AudioClip microphoneClip;
     public Vector3 minScale;
     public Vector3 maxScale;
     public AudioLoudnessDetection detector;
@@ -14,6 +17,10 @@ public class ScaleFromMicrophone : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (!Permission.HasUserAuthorizedPermission(Permission.Microphone))
+        {
+            Permission.RequestUserPermission(Permission.Microphone);
+        }
 
     }
 
@@ -25,6 +32,16 @@ public class ScaleFromMicrophone : MonoBehaviour
         if (loudness < threshold)
             loudness = 0;
 
+        if (loudness > threshold)
+            placementIndicatorScript.moveHorse();
+
         transform.localScale = Vector3.Lerp(minScale, maxScale, loudness);
+    }
+
+    public void MicrophoneToAudioClip()
+    {
+        //hämtar ljud
+        string microphoneName = Microphone.devices[0];
+        microphoneClip = Microphone.Start(microphoneName, true, 20, AudioSettings.outputSampleRate);
     }
 }

@@ -1,0 +1,1 @@
+D:\Vetrinary_AR\IM_Vet_G11\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\build\intermediates\cxx\RelWithDebInfo\2h592q4a\obj\arm64-v8a
