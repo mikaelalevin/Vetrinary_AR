@@ -1,12 +1,12 @@
 # ninja log v5
-32	163	7633917825641332	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	4e8e4c5ff891aee7
-164	293	7633917826988637	C:/Users/mile3677/Documents/GitHub/Vetrinary_AR/IM_Vet_G11/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/3sz1p201/obj/arm64-v8a/libswappywrapper.so	8f0382cb6f17bc86
-16	792	7633917831864850	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	8efb305d80ce31ec
-21	809	7633917832054402	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	9da83bd27abe5257
-7	810	7633917832054402	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	b1cb2346138faf68
-39	851	7633917832448714	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	7e4b122a5669c8c8
-45	928	7633917833227381	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	6ef7e612493dc88d
-1	941	7633917833386481	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	fdc5e07363f40db7
-26	1093	7633917834976295	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	1a5ab2e2bc15dca9
-11	1187	7633917835859192	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	aeeca8ac2dd854a9
-1187	1283	7633917836920410	C:/Users/mile3677/Documents/GitHub/Vetrinary_AR/IM_Vet_G11/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/3sz1p201/obj/arm64-v8a/libgame.so	e8ee301defa33be0
+112	690	7634064788151555	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	4e8e4c5ff891aee7
+693	1015	7634064791135427	C:/Users/mile3677/Documents/GitHub/Vetrinary_AR/IM_Vet_G11/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/3sz1p201/obj/arm64-v8a/libswappywrapper.so	8f0382cb6f17bc86
+35	1948	7634064800524047	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	8efb305d80ce31ec
+11	1979	7634064800730396	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	b1cb2346138faf68
+77	2056	7634064800212089	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	9da83bd27abe5257
+93	2161	7634064802752575	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	6ef7e612493dc88d
+62	2237	7634064802330966	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	7e4b122a5669c8c8
+23	2350	7634064804151377	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	fdc5e07363f40db7
+49	3129	7634064812129273	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	1a5ab2e2bc15dca9
+1	3173	7634064812626414	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	aeeca8ac2dd854a9
+3174	3489	7634064815957737	C:/Users/mile3677/Documents/GitHub/Vetrinary_AR/IM_Vet_G11/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/3sz1p201/obj/arm64-v8a/libgame.so	e8ee301defa33be0
