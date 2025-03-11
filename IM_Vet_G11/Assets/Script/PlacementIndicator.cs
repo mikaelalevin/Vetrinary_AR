@@ -76,6 +76,9 @@ public class PlacementIndicator : MonoBehaviour
                 {
                     if (sprutaTable) sprutaTable.SetActive(false); // Disables the entire object
                     if (sprutaHands) sprutaHands.SetActive(true);
+
+                    FindObjectOfType<AssistantController>()?.PlayerActionTaken();
+
                 }
             }
             else
@@ -116,6 +119,9 @@ public class PlacementIndicator : MonoBehaviour
 
             // Log to verify the movement
             Debug.Log("Horse moved to: " + horseScene.transform.position);
+
+            FindObjectOfType<AssistantController>()?.PlayerActionTaken(); //nollställer assistentesns timer
+
         }
     }
 }
