@@ -3,16 +3,32 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using System.Collections.Generic;
 using TMPro;
+using System.Collections;
 
 public class PlacementIndicator : MonoBehaviour
 {
     public Canvas ui;
+
     public GameObject sprutaTable;
     public GameObject sprutaHands;
-    public ARRaycastManager rayManager;
+    public GameObject bomullTable;
+    public GameObject bomullHands;
+    public GameObject pillerTable;
+    public GameObject pillerHands;
+    public GameObject morotTable;
+    public GameObject morotHands;
+    public GameObject termometerTable;
+    public GameObject termometerHands;
+    public GameObject table;
 
+    private GameObject objectHands;
+    private GameObject objectTable;
+
+    public ARRaycastManager rayManager;
     public GameObject horseScene;
     public GameObject text;
+
+    private bool handsOccupied = false;
     public LineFillController lineController;
     private GameObject visual;
     List<ARRaycastHit> hits = new List<ARRaycastHit>();
@@ -22,106 +38,175 @@ public class PlacementIndicator : MonoBehaviour
 
     public TextMeshProUGUI syringeText;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private bool isPickingUp = false;
+    private bool isPuttingDown = false;
+    private bool isRaycastingObject = false;
+
     void Start()
     {
-        // Get the components
         visual = transform.GetChild(0).gameObject;
-
-        // Hide the placement indicator visual initially
         visual.SetActive(false);
-        text.SetActive(false);        
+        text.SetActive(false);
         horseScene.SetActive(false);
-
         if (syringeText) syringeText.gameObject.SetActive(false);
         sprutaHands.SetActive(false);
+        bomullHands.SetActive(false);
+        pillerHands.SetActive(false);
+        morotHands.SetActive(false);
+        termometerHands.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // Shoot a raycast from the center of the screen        
         rayManager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), hits, TrackableType.Planes);
 
-        // If we hit an AR plane surface, update the position and rotation
         if (hits.Count > 0)
         {
             transform.position = hits[0].pose.position;
             transform.rotation = hits[0].pose.rotation;
-
-            // Show the visual if it's not active
-            if (!visual.activeInHierarchy)
-                visual.SetActive(true);
+            if (!visual.activeInHierarchy) visual.SetActive(true);
         }
         else
         {
-            visual.SetActive(false); // Hide the visual if no plane is detected
+            visual.SetActive(false);
         }
 
-        // Raycast to check if sprutaTable is hit
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit))
         {
-            if (hit.collider.gameObject == sprutaTable)
-            {
-                lineController.StartFilling();
-                hitTimer += Time.deltaTime;
-
-                if (syringeText)
-                    syringeText.gameObject.SetActive(true);               
-
-                if (hitTimer >= requiredHitTime)
-                {
-                    if (sprutaTable) sprutaTable.SetActive(false); // Disables the entire object
-                    if (sprutaHands) sprutaHands.SetActive(true);
-
-                    FindObjectOfType<AssistantController>()?.PlayerActionTaken();
-
-                }
-            }
-            else
-            {
-                hitTimer = 0f; // Reset timer if not hitting sprutaTable
-                if (syringeText) syringeText.gameObject.SetActive(false);
-            }
+            if (hit.collider.gameObject == sprutaTable) HandleObjectDetection(sprutaTable, sprutaHands);
+            else if (hit.collider.gameObject == bomullTable) HandleObjectDetection(bomullTable, bomullHands);
+            else if (hit.collider.gameObject == pillerTable) HandleObjectDetection(pillerTable, pillerHands);
+            else if (hit.collider.gameObject == morotTable) HandleObjectDetection(morotTable, morotHands);
+            else if (hit.collider.gameObject == termometerTable) HandleObjectDetection(termometerTable, termometerHands);
+            else if (hit.collider.gameObject == table && handsOccupied) StartPuttingDown();
+            else ResetProcess();
         }
         else
         {
-            hitTimer = 0f; // Reset timer if nothing is hit
-            if (syringeText) syringeText.gameObject.SetActive(false);
+            ResetProcess();
         }
 
-        // Detect screen tap or click
-        if (Input.GetMouseButtonDown(0))
-        {            
-            moveHorse();            
+        if (Input.GetMouseButtonDown(0)) moveHorse();
+    }
+
+    void HandleObjectDetection(GameObject tableObj, GameObject handsObj)
+    {
+        if (!isRaycastingObject)
+        {
+            isRaycastingObject = true;
+            hitTimer = 0f;
+            isPickingUp = false;
+            isPuttingDown = false;
+        }
+
+        objectTable = tableObj;
+        objectHands = handsObj;
+
+        if (!isPickingUp) StartPickingUp();
+    }
+
+    void StartPickingUp()
+    {
+        isPickingUp = true;
+        lineController.StartFilling();
+        StartCoroutine(PickUpCoroutine());
+    }
+
+    IEnumerator PickUpCoroutine()
+    {
+        hitTimer = 0f; // Reset timer only at the start of the coroutine
+        while (hitTimer < requiredHitTime && isRaycastingObject)
+        {
+            hitTimer += Time.deltaTime;
+            yield return null; // Wait for the next frame
+        }
+
+        if (isRaycastingObject && !handsOccupied)
+        {
+            Debug.Log("Pickup complete! Moving object to hands.");
+
+            // Disable object on the table
+            if (objectTable != null)
+            {
+                objectTable.SetActive(false);
+            }
+
+            // Enable object in the player's hands
+            if (objectHands != null)
+            {
+                objectHands.SetActive(true);
+            }
+
+            handsOccupied = true;
+
+            // Notify AssistantController
+            FindObjectOfType<AssistantController>()?.PlayerActionTaken();
+        }
+    }
+
+    void StartPuttingDown()
+    {
+        if (!isPuttingDown)
+        {
+            isPuttingDown = true;
+            lineController.StartFilling();
+            StartCoroutine(PutDownCoroutine());
+        }
+    }
+
+    IEnumerator PutDownCoroutine()
+    {
+        hitTimer = 0f; // Reset timer at start
+
+        while (hitTimer < requiredHitTime && isRaycastingObject)
+        {
+            hitTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        // Enable object back on the table
+        if (objectTable != null)
+        {
+            objectTable.SetActive(true);
+        }
+
+        // Disable the object in the player's hands
+        if (objectHands != null)
+        {
+            objectHands.SetActive(false);
+        }
+
+        handsOccupied = false;
+
+        // Notify AssistantController
+        FindObjectOfType<AssistantController>()?.PlayerActionTaken();
+    }
+
+    void ResetProcess()
+    {
+        if (isRaycastingObject)
+        {
+            isRaycastingObject = false;
+            hitTimer = 0f;
+            isPickingUp = false;
+            isPuttingDown = false;
         }
     }
 
     public void moveHorse()
     {
-        //text.SetActive(true); (debugg för att testa input)
         horseScene.SetActive(true);
-
-        // Only process the first touch or mouse click
         Vector2 touchPosition = (Input.touchCount > 0) ? Input.GetTouch(0).position : (Vector2)Input.mousePosition;
 
-        // Check if the PlacementIndicator has a valid position
         if (horseScene != null && hits.Count > 0)
         {
-            // Move the horse to the PlacementIndicator's position
-
-
             horseScene.transform.position = hits[0].pose.position;
-            horseScene.transform.rotation = hits[0].pose.rotation; // Optionally match the rotation
-
-            // Log to verify the movement
+            horseScene.transform.rotation = hits[0].pose.rotation;
             Debug.Log("Horse moved to: " + horseScene.transform.position);
-
-            FindObjectOfType<AssistantController>()?.PlayerActionTaken(); //nollställer assistentesns timer
-
+            FindObjectOfType<AssistantController>()?.PlayerActionTaken();
         }
     }
 }

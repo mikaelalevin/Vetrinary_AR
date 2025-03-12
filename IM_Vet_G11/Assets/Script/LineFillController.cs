@@ -27,7 +27,7 @@ public class LineFillController : MonoBehaviour
 
     private IEnumerator FillLine()
     {
-        while (lineImage.fillAmount < 1f)
+        while (lineImage.fillAmount < 3f)
         {
             lineImage.fillAmount += Time.deltaTime * fillSpeed;
             yield return null;
