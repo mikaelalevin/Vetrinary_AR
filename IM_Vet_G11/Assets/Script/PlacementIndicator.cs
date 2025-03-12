@@ -143,7 +143,7 @@ public class PlacementIndicator : MonoBehaviour
             handsOccupied = true;
 
             // Notify AssistantController
-            FindObjectOfType<AssistantController>()?.PlayerActionTaken();
+            //FindObjectOfType<AssistantController>()?.PlayerActionTaken();
         }
     }
 
@@ -182,7 +182,7 @@ public class PlacementIndicator : MonoBehaviour
         handsOccupied = false;
 
         // Notify AssistantController
-        FindObjectOfType<AssistantController>()?.PlayerActionTaken();
+        //FindObjectOfType<AssistantController>()?.PlayerActionTaken();
     }
 
     void ResetProcess()
@@ -206,7 +206,7 @@ public class PlacementIndicator : MonoBehaviour
             horseScene.transform.position = hits[0].pose.position;
             horseScene.transform.rotation = hits[0].pose.rotation;
             Debug.Log("Horse moved to: " + horseScene.transform.position);
-            FindObjectOfType<AssistantController>()?.PlayerActionTaken();
+            //FindObjectOfType<AssistantController>()?.PlayerActionTaken();
         }
     }
 }
