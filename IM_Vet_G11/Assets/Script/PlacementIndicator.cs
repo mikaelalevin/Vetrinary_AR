@@ -4,6 +4,8 @@ using UnityEngine.XR.ARSubsystems;
 using System.Collections.Generic;
 using TMPro;
 using System.Collections;
+using UnityEngine.InputSystem.HID;
+using Unity.VisualScripting;
 
 public class PlacementIndicator : MonoBehaviour
 {
@@ -20,6 +22,7 @@ public class PlacementIndicator : MonoBehaviour
     public GameObject termometerTable;
     public GameObject termometerHands;
     public GameObject table;
+    public GameObject lineImage;
 
     private GameObject objectHands;
     private GameObject objectTable;
@@ -28,19 +31,17 @@ public class PlacementIndicator : MonoBehaviour
     public GameObject horseScene;
     public GameObject text;
 
+
     private bool handsOccupied = false;
+    private bool handlingObject = false;
     public LineFillController lineController;
     private GameObject visual;
     List<ARRaycastHit> hits = new List<ARRaycastHit>();
 
-    private float hitTimer = 0f;
+
     public float requiredHitTime = 3f;
 
     public TextMeshProUGUI syringeText;
-
-    private bool isPickingUp = false;
-    private bool isPuttingDown = false;
-    private bool isRaycastingObject = false;
 
     void Start()
     {
@@ -54,6 +55,7 @@ public class PlacementIndicator : MonoBehaviour
         pillerHands.SetActive(false);
         morotHands.SetActive(false);
         termometerHands.SetActive(false);
+
     }
 
     void Update()
@@ -76,17 +78,12 @@ public class PlacementIndicator : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            if (hit.collider.gameObject == sprutaTable) HandleObjectDetection(sprutaTable, sprutaHands);
-            else if (hit.collider.gameObject == bomullTable) HandleObjectDetection(bomullTable, bomullHands);
-            else if (hit.collider.gameObject == pillerTable) HandleObjectDetection(pillerTable, pillerHands);
-            else if (hit.collider.gameObject == morotTable) HandleObjectDetection(morotTable, morotHands);
-            else if (hit.collider.gameObject == termometerTable) HandleObjectDetection(termometerTable, termometerHands);
-            else if (hit.collider.gameObject == table && handsOccupied) StartPuttingDown();
-            else ResetProcess();
-        }
-        else
-        {
-            ResetProcess();
+            if (hit.collider.gameObject == sprutaTable && !handsOccupied) HandleObjectDetection(sprutaTable, sprutaHands);
+            else if (hit.collider.gameObject == bomullTable && !handsOccupied) HandleObjectDetection(bomullTable, bomullHands);
+            else if (hit.collider.gameObject == pillerTable && !handsOccupied) HandleObjectDetection(pillerTable, pillerHands);
+            else if (hit.collider.gameObject == morotTable && !handsOccupied) HandleObjectDetection(morotTable, morotHands);
+            else if (hit.collider.gameObject == termometerTable && !handsOccupied) HandleObjectDetection(termometerTable, termometerHands);
+            else if (hit.collider.gameObject == table && handsOccupied) PutDown();
         }
 
         if (Input.GetMouseButtonDown(0)) moveHorse();
@@ -94,106 +91,98 @@ public class PlacementIndicator : MonoBehaviour
 
     void HandleObjectDetection(GameObject tableObj, GameObject handsObj)
     {
-        if (!isRaycastingObject)
+        if (!handlingObject)
         {
-            isRaycastingObject = true;
-            hitTimer = 0f;
-            isPickingUp = false;
-            isPuttingDown = false;
+            handlingObject = true;
+            lineController.StartFilling();            
         }
 
-        objectTable = tableObj;
+        if (!handsOccupied)
+        {
+            StartCoroutine(PickUpCoroutine(tableObj, handsObj));
+        }
+    }
+
+    IEnumerator PickUpCoroutine(GameObject tableObj, GameObject handsObj)
+    {
+        float pickUpTimer = 0f;
+
+
+        while (pickUpTimer < requiredHitTime)
+        {
+            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+            RaycastHit hit;
+
+            if (!Physics.Raycast(ray, out hit) || hit.collider.gameObject != tableObj)
+            {
+                Debug.Log("No longer hitting the object. Exiting pickup.");
+                handlingObject = false;
+                lineController.Hide();
+                yield break; // Exit coroutine                
+            }
+
+            pickUpTimer += Time.deltaTime;
+            yield return null; // Wait until the next frame
+        }
+
+        // Pickup complete
         objectHands = handsObj;
+        objectTable = tableObj;
+        PickUp();
+        handsOccupied = true;
+        handlingObject = false;
+        lineController.Hide();
 
-        if (!isPickingUp) StartPickingUp();
     }
 
-    void StartPickingUp()
+    void PickUp()
     {
-        isPickingUp = true;
-        lineController.StartFilling();
-        StartCoroutine(PickUpCoroutine());
+        objectHands.SetActive(true);
+        objectTable.SetActive(false);
     }
 
-    IEnumerator PickUpCoroutine()
+    void PutDown()
     {
-        hitTimer = 0f; // Reset timer only at the start of the coroutine
-        while (hitTimer < requiredHitTime && isRaycastingObject)
+        if (!handlingObject)
         {
-            hitTimer += Time.deltaTime;
-            yield return null; // Wait for the next frame
-        }
-
-        if (isRaycastingObject && !handsOccupied)
-        {
-            Debug.Log("Pickup complete! Moving object to hands.");
-
-            // Disable object on the table
-            if (objectTable != null)
-            {
-                objectTable.SetActive(false);
-            }
-
-            // Enable object in the player's hands
-            if (objectHands != null)
-            {
-                objectHands.SetActive(true);
-            }
-
-            handsOccupied = true;
-
-            // Notify AssistantController
-            //FindObjectOfType<AssistantController>()?.PlayerActionTaken();
-        }
-    }
-
-    void StartPuttingDown()
-    {
-        if (!isPuttingDown)
-        {
-            isPuttingDown = true;
+            handlingObject = true;
             lineController.StartFilling();
+        }
+
+        if (handsOccupied)
+        {
             StartCoroutine(PutDownCoroutine());
         }
     }
 
     IEnumerator PutDownCoroutine()
     {
-        hitTimer = 0f; // Reset timer at start
+        float putDownTimer = 0f;
 
-        while (hitTimer < requiredHitTime && isRaycastingObject)
+        while (putDownTimer < requiredHitTime)
         {
-            hitTimer += Time.deltaTime;
-            yield return null;
+            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+            RaycastHit hit;
+
+            if (!Physics.Raycast(ray, out hit) || hit.collider.gameObject != table)
+            {
+                Debug.Log("No longer hitting the table. Exiting put down.");
+                handlingObject = false;
+                lineController.Hide();
+                yield break;
+            }
+
+            putDownTimer += Time.deltaTime;
+            yield return null; // Wait until the next frame
         }
 
-        // Enable object back on the table
-        if (objectTable != null)
-        {
-            objectTable.SetActive(true);
-        }
-
-        // Disable the object in the player's hands
-        if (objectHands != null)
-        {
-            objectHands.SetActive(false);
-        }
-
+        // Put down complete
+        objectHands.SetActive(false);
+        objectTable.SetActive(true);
         handsOccupied = false;
+        handlingObject = false;
+        lineController.Hide();
 
-        // Notify AssistantController
-        //FindObjectOfType<AssistantController>()?.PlayerActionTaken();
-    }
-
-    void ResetProcess()
-    {
-        if (isRaycastingObject)
-        {
-            isRaycastingObject = false;
-            hitTimer = 0f;
-            isPickingUp = false;
-            isPuttingDown = false;
-        }
     }
 
     public void moveHorse()

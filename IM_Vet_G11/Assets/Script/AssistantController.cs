@@ -15,6 +15,7 @@ public class AssistantController : MonoBehaviour
     {
         speechBubble.SetActive(true); // Visa pratbubblan
         StartCoroutine(ShowMessage());
+        speechText.gameObject.SetActive(true);
     }
 
     private IEnumerator ShowMessage()
@@ -23,6 +24,7 @@ public class AssistantController : MonoBehaviour
         yield return StartCoroutine(TypeText(message)); // Skriv ut texten gradvis
         yield return new WaitForSeconds(assistDuration); // Vänta några sekunder
         speechBubble.SetActive(false); // Dölj pratbubblan
+        speechText.gameObject.SetActive(false);
     }
 
     private IEnumerator TypeText(string message)
