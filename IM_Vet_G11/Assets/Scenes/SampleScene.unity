@@ -1981,7 +1981,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 835980629}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.000068522}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2.5355651, y: 2.5355651, z: 2.5355651}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1989,8 +1989,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 210, y: 237}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 127, y: 169}
+  m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &835980631
 MonoBehaviour:
@@ -5259,10 +5259,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d2c77a76b2062f4987c8b2a5278d647, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speechBubble: {fileID: 835980629}
-  speechText: {fileID: 1140047412}
+  speachBubble: {fileID: 835980629}
+  speachText: {fileID: 1140047412}
   assistDuration: 5
   typingSpeed: 0.05
+  delayBeforeReappearing: 5
 --- !u!4 &2134116100 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a584f191a7fa55d43b7aac5064ed61a1, type: 3}
