@@ -24,6 +24,8 @@ public class PlacementIndicator : MonoBehaviour
     public GameObject table;
     public GameObject lineImage;
 
+    public GameObject horseMouth;
+
     private GameObject objectHands;
     private GameObject objectTable;
 
@@ -35,6 +37,7 @@ public class PlacementIndicator : MonoBehaviour
     private bool handsOccupied = false;
     private bool handlingObject = false;
     public LineFillController lineController;
+    public ObjectText objectText;
     private GameObject visual;
     List<ARRaycastHit> hits = new List<ARRaycastHit>();
 
@@ -83,7 +86,8 @@ public class PlacementIndicator : MonoBehaviour
             else if (hit.collider.gameObject == pillerTable && !handsOccupied) HandleObjectDetection(pillerTable, pillerHands);
             else if (hit.collider.gameObject == morotTable && !handsOccupied) HandleObjectDetection(morotTable, morotHands);
             else if (hit.collider.gameObject == termometerTable && !handsOccupied) HandleObjectDetection(termometerTable, termometerHands);
-            else if (hit.collider.gameObject == table && handsOccupied) PutDown();
+            else if (hit.collider.gameObject == table && handsOccupied) PutDown(table);
+            else if (hit.collider.gameObject == horseMouth && handsOccupied) PutDown(horseMouth);
         }
 
         if (Input.GetMouseButtonDown(0)) moveHorse();
@@ -94,7 +98,8 @@ public class PlacementIndicator : MonoBehaviour
         if (!handlingObject)
         {
             handlingObject = true;
-            lineController.StartFilling();            
+            lineController.StartFilling();
+            objectText.ShowText(tableObj);
         }
 
         if (!handsOccupied)
@@ -118,6 +123,7 @@ public class PlacementIndicator : MonoBehaviour
                 Debug.Log("No longer hitting the object. Exiting pickup.");
                 handlingObject = false;
                 lineController.Hide();
+                objectText.HideText();
                 yield break; // Exit coroutine                
             }
 
@@ -132,6 +138,7 @@ public class PlacementIndicator : MonoBehaviour
         handsOccupied = true;
         handlingObject = false;
         lineController.Hide();
+        objectText.HideText();
 
     }
 
@@ -141,21 +148,23 @@ public class PlacementIndicator : MonoBehaviour
         objectTable.SetActive(false);
     }
 
-    void PutDown()
+    void PutDown(GameObject place)
     {
         if (!handlingObject)
         {
             handlingObject = true;
-            lineController.StartFilling();
+            if (place == table)
+                lineController.StartFilling();
+            objectText.ShowText(place);
         }
 
         if (handsOccupied)
         {
-            StartCoroutine(PutDownCoroutine());
+            StartCoroutine(PutDownCoroutine(place));
         }
     }
 
-    IEnumerator PutDownCoroutine()
+    IEnumerator PutDownCoroutine(GameObject place)
     {
         float putDownTimer = 0f;
 
@@ -164,11 +173,12 @@ public class PlacementIndicator : MonoBehaviour
             Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
             RaycastHit hit;
 
-            if (!Physics.Raycast(ray, out hit) || hit.collider.gameObject != table)
+            if (!Physics.Raycast(ray, out hit) || hit.collider.gameObject != place)
             {
                 Debug.Log("No longer hitting the table. Exiting put down.");
                 handlingObject = false;
                 lineController.Hide();
+                objectText.HideText();
                 yield break;
             }
 
@@ -177,12 +187,25 @@ public class PlacementIndicator : MonoBehaviour
         }
 
         // Put down complete
+        if (place == table) {
+            objectHands.SetActive(false);
+            objectTable.SetActive(true);
+            handsOccupied = false;
+            handlingObject = false;
+            lineController.Hide();
+            objectText.HideText();
+        }
+
+    }
+
+    public void HorseEat()
+    {
         objectHands.SetActive(false);
         objectTable.SetActive(true);
         handsOccupied = false;
         handlingObject = false;
         lineController.Hide();
-
+        objectText.HideText();
     }
 
     public void moveHorse()
