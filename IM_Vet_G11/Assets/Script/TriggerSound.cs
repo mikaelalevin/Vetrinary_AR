@@ -13,7 +13,7 @@ public class Trigger_Sound : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter(Collider other) // Om du vill använda en trigger istället
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Spruta"))
         {
@@ -22,9 +22,15 @@ public class Trigger_Sound : MonoBehaviour
         }
         if (other.gameObject.CompareTag("Morot"))
         {
-            Debug.Log("Sprutan aktiverade triggern på hästen!");
+            Debug.Log("Moroten aktiverade triggern på hästen!");
             audioSource.PlayOneShot(carrot);
             placementIndicator.HorseEat();
         }
+        if (other.gameObject.CompareTag("Piller"))
+        {
+            Debug.Log("Pillret aktiverade triggern på hästen!");
+            placementIndicator.HorseEat();
+        }
+
     }
 }
