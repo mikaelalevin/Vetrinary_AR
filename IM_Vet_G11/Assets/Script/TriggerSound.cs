@@ -6,6 +6,7 @@ public class Trigger_Sound : MonoBehaviour
     public AudioClip carrot;
     private AudioSource audioSource;
     public PlacementIndicator placementIndicator;
+    public AssistantController assistantController;
 
     void Start()
     {
@@ -30,6 +31,12 @@ public class Trigger_Sound : MonoBehaviour
         {
             Debug.Log("Pillret aktiverade triggern på hästen!");
             placementIndicator.HorseEat();
+            assistantController.OnboardFour();
+        }
+        if (other.gameObject.CompareTag("Termometer"))
+        {
+            Debug.Log("Termometern aktiverade triggern på hästen!");
+            assistantController.OnboardThree();
         }
 
     }

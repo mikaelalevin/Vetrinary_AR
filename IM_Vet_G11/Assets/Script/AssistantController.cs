@@ -8,23 +8,128 @@ public class AssistantController : MonoBehaviour
     public TextMeshProUGUI speachText; // Textfältet i pratbubblan
     public float assistDuration = 5f; // Hur länge assistenten visas
     public float typingSpeed = 0.05f; // Hastighet för textanimation
-    public float delayBeforeReappearing = 5f; // Väntetid innan pratbubblan kommer tillbaka
+    public float delayBeforeReappearing = 1f; // Väntetid innan pratbubblan kommer tillbaka
+
+    private int onboardingStage = 0;
 
     private Coroutine typingCoroutine;
+    private Coroutine activeCoroutine;
 
     void Start()
     {
-        StartCoroutine(ShowMessages());
+        HideSpeech();
+        activeCoroutine = StartCoroutine(OnboardOne());
     }
 
-    private IEnumerator ShowMessages()
+    public void StartOnboardingStep(IEnumerator newCoroutine)
+    {
+        if (activeCoroutine != null)
+        {
+            StopCoroutine(activeCoroutine); // Stop the currently running coroutine
+        }
+        activeCoroutine = StartCoroutine(newCoroutine); // Start new coroutine
+    }
+
+    public void HideSpeech()
+    {
+        speachBubble.SetActive(false);
+        speachText.gameObject.SetActive(false);
+    }
+
+    public IEnumerator OnboardOne()
+    {
+        onboardingStage = 1;
+        yield return new WaitForSeconds(delayBeforeReappearing);
+        speachBubble.SetActive(true);
+        speachText.gameObject.SetActive(true);
+        yield return StartCoroutine(TypeText("Hello and welcome to your veterinary clinic! \nLet's start by calling for your first patient Billy"));
+    }
+
+    public IEnumerator OnboardTwo()
+    {
+        if (onboardingStage <= 1) {
+            HideSpeech();
+            onboardingStage = 2;
+            yield return new WaitForSeconds(delayBeforeReappearing);
+            speachBubble.SetActive(true);
+            speachText.gameObject.SetActive(true);
+            yield return StartCoroutine(TypeText("Now, grab the thermometer and check if Billy has a fever"));
+        }
+    }
+    public IEnumerator OnboardThree()
+    {
+        if (onboardingStage == 2) {
+            HideSpeech();
+            onboardingStage = 3;
+            yield return new WaitForSeconds(delayBeforeReappearing);
+            speachBubble.SetActive(true);
+            speachText.gameObject.SetActive(true);
+            yield return StartCoroutine(TypeText("39.4 It looks like Billy has a fever. Give him a pill to bring down his tempature"));
+        }
+    }
+    public IEnumerator OnboardFour()
+    {
+        if (onboardingStage == 3)
+        {
+            HideSpeech();
+            onboardingStage = 4;
+            yield return new WaitForSeconds(delayBeforeReappearing);
+            speachBubble.SetActive(true);
+            speachText.gameObject.SetActive(true);
+            yield return StartCoroutine(TypeText("Good joob! Give Billy a carrot to get rid of the nasty medicine taste"));
+        }
+    }
+    public IEnumerator OnboardFive()
+    {
+        if (onboardingStage == 4)
+        {
+            HideSpeech();
+            onboardingStage = 5;
+            yield return new WaitForSeconds(delayBeforeReappearing);
+            speachBubble.SetActive(true);
+            speachText.gameObject.SetActive(true);
+            yield return StartCoroutine(TypeText("Fever in horses can be caused by an ear infection. Take the cotton swab and clean the ears"));
+        }
+        if (onboardingStage == 7) //Staging complete
+        {
+            HideSpeech();
+            yield break;
+        }
+    }
+    public IEnumerator OnboardSix()
+    {
+        if (onboardingStage == 5)
+        {
+            HideSpeech();
+            onboardingStage = 6;
+            yield return new WaitForSeconds(delayBeforeReappearing);
+            speachBubble.SetActive(true);
+            speachText.gameObject.SetActive(true);
+            yield return StartCoroutine(TypeText("Lastly, Billy needs his yearly vaccination. Give him the shot"));
+        }
+    }
+    public IEnumerator OnboardSeven()
+    {
+        if (onboardingStage == 6)
+        {
+            HideSpeech();
+            onboardingStage = 7;
+            yield return new WaitForSeconds(delayBeforeReappearing);
+            speachBubble.SetActive(true);
+            speachText.gameObject.SetActive(true);
+            yield return StartCoroutine(TypeText("Now reward Billy with a carrot for being such a good boy"));
+        }
+    }
+
+
+   /* private IEnumerator ShowMessages()
     {
         // Första meddelandet
         speachBubble.SetActive(true);
         speachText.gameObject.SetActive(true);
         yield return StartCoroutine(TypeText("Hello and welcome to your veterinary clinic! \nLet's start by calling for your first patient Billy"));
         yield return new WaitForSeconds(assistDuration);
-
+                
         // Dölj pratbubblan
         speachBubble.SetActive(false);
         speachText.gameObject.SetActive(false);
@@ -66,29 +171,7 @@ public class AssistantController : MonoBehaviour
          // Femte meddelandet
         speachBubble.SetActive(true);
         speachText.gameObject.SetActive(true);
-        yield return StartCoroutine(TypeText("Fever in horses can be caused by an infection from a wound. Walk around Billy to see if you can find any"));
-        yield return new WaitForSeconds(assistDuration);
-
-         // Dölj pratbubblan igen
-        speachBubble.SetActive(false);
-        speachText.gameObject.SetActive(false);
-        yield return new WaitForSeconds(delayBeforeReappearing);
-
-         // Sjätte meddelandet
-        speachBubble.SetActive(true);
-        speachText.gameObject.SetActive(true);
-        yield return StartCoroutine(TypeText("You really have an eye for spotting wounds! Take a cotton swab to clean the wound before we bandage it"));
-        yield return new WaitForSeconds(assistDuration);
-
-         // Dölj pratbubblan igen
-        speachBubble.SetActive(false);
-        speachText.gameObject.SetActive(false);
-        yield return new WaitForSeconds(delayBeforeReappearing);
-
-         // Sjunde meddelandet
-        speachBubble.SetActive(true);
-        speachText.gameObject.SetActive(true);
-        yield return StartCoroutine(TypeText("Well done! Now put a bandage on to keep the wound protected from bacteria"));
+        yield return StartCoroutine(TypeText("Fever in horses can be caused by an ear infection. Take the cotton swab and clean the ears"));
         yield return new WaitForSeconds(assistDuration);
 
          // Dölj pratbubblan igen
@@ -124,6 +207,7 @@ public class AssistantController : MonoBehaviour
 
 
     }
+   */
 
     private IEnumerator TypeText(string message)
     {

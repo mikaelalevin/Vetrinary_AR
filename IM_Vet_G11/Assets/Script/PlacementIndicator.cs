@@ -36,7 +36,9 @@ public class PlacementIndicator : MonoBehaviour
 
     private bool handsOccupied = false;
     private bool handlingObject = false;
+    private bool horseSceneSpawned = false;
     public LineFillController lineController;
+    public AssistantController assistantController;
     public ObjectText objectText;
     private GameObject visual;
     List<ARRaycastHit> hits = new List<ARRaycastHit>();
@@ -144,7 +146,7 @@ public class PlacementIndicator : MonoBehaviour
 
     void PickUp()
     {
-        objectHands.SetActive(true);
+        objectHands.SetActive(true);            
         objectTable.SetActive(false);
     }
 
@@ -210,7 +212,15 @@ public class PlacementIndicator : MonoBehaviour
 
     public void moveHorse()
     {
+        if (horseSceneSpawned == false)
+        {
+            assistantController.StartOnboardingStep(assistantController.OnboardTwo());
+            Debug.Log("Borde starta OnboardTwo");
+        }
+
         horseScene.SetActive(true);
+        horseSceneSpawned = true;
+        
         Vector2 touchPosition = (Input.touchCount > 0) ? Input.GetTouch(0).position : (Vector2)Input.mousePosition;
 
         if (horseScene != null && hits.Count > 0)
