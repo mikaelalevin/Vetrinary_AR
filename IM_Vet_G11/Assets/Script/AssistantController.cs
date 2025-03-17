@@ -53,7 +53,7 @@ public class AssistantController : MonoBehaviour
             yield return new WaitForSeconds(delayBeforeReappearing);
             speachBubble.SetActive(true);
             speachText.gameObject.SetActive(true);
-            yield return StartCoroutine(TypeText("Now, grab the thermometer and check if Billy has a fever"));
+            yield return StartCoroutine(TypeText("Now, grab the thermometer and check if Billy has a fever, pick up the instruments by aiming the reticle"));
         }
     }
     public IEnumerator OnboardThree()
@@ -64,7 +64,7 @@ public class AssistantController : MonoBehaviour
             yield return new WaitForSeconds(delayBeforeReappearing);
             speachBubble.SetActive(true);
             speachText.gameObject.SetActive(true);
-            yield return StartCoroutine(TypeText("39.4 It looks like Billy has a fever. Give him a pill to bring down his tempature"));
+            yield return StartCoroutine(TypeText("39.4 It looks like Billy has a fever. Put down the thermomterer, and give Billy a pill instead."));
         }
     }
     public IEnumerator OnboardFour()
@@ -76,7 +76,7 @@ public class AssistantController : MonoBehaviour
             yield return new WaitForSeconds(delayBeforeReappearing);
             speachBubble.SetActive(true);
             speachText.gameObject.SetActive(true);
-            yield return StartCoroutine(TypeText("Good joob! Give Billy a carrot to get rid of the nasty medicine taste"));
+            yield return StartCoroutine(TypeText("Good job! Give Billy a carrot to get rid of the nasty medicine taste"));
         }
     }
     public IEnumerator OnboardFive()
